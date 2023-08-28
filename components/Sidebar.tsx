@@ -5,6 +5,7 @@ import { HiHome } from 'react-icons/hi'
 import { BiSearch } from 'react-icons/bi'
 import Box from '@/components/Box'
 import SidebarItem from './SidebarItem'
+import Library from './Library'
 
 interface SidebarProps {
 	children: React.ReactNode
@@ -39,9 +40,14 @@ const Sidebar: FC<SidebarProps> = ({ children }) => {
 						))}
 					</div>
 				</Box>
+				<Box className='overflow-y-auto h-full'>
+					<Library />
+				</Box>
 			</div>
-			{/* the children aren't automatically client components because we're passing them as props like this */}
-			{children}
+			<main className='h-full flex-1 overflow-y-auto py-2'>
+				{/* the children aren't automatically client components because we're passing them as props like this */}
+				{children}
+			</main>
 		</div>
 	)
 }
