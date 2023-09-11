@@ -8,6 +8,9 @@ import { BiSearch } from 'react-icons/bi'
 import Button from './Button'
 import { FaUserAlt } from 'react-icons/fa'
 import useAuthModal from '@/hooks/useAuthModal'
+import { useSupabaseClient } from '@supabase/auth-helpers-react'
+import { useUser } from '@/hooks/useUser'
+import { toast } from 'react-hot-toast'
 
 interface HeaderProps {
 	children: React.ReactNode
@@ -16,12 +19,21 @@ interface HeaderProps {
 
 const Header: FC<HeaderProps> = ({ children, className }) => {
 	const authModal = useAuthModal()
-
 	const router = useRouter()
-	const handleLogout = () => {
-		// handle logout
+	const supabaseClient = useSupabaseClient()
+	const { user, isLoading } = useUser()
+
+	const handleLogout = async () => {
+		const { error } = await supabaseClient.auth.signOut()
+		router.refresh()
+		// reset any playing songs
+
+		if (error) {
+			toast.error(error.message)
+		}
 	}
-	const user = {}
+
+	console.log('user', user)
 
 	return (
 		<div
@@ -102,29 +114,23 @@ const Header: FC<HeaderProps> = ({ children, className }) => {
 					</button>
 				</div>
 				<div className='flex justify-between items-center gap-x-4'>
-					{user ? (
+					{!isLoading && user ? (
 						<div className='flex gap-x-4 items-center'>
+							<Button onClick={handleLogout} className='bg-white px-6 py-2'>
+								Logout
+							</Button>
 							<Button
-								onClick={authModal.onOpen}
-								className='bg-transparent text-nuetral-300 font-medium'
-							>
-								Sign up
-							</Button>
-							<Button onClick={authModal.onOpen} className='bg-white px-6 py-2'>
-								Log in
-							</Button>
-							{/* <Button
-								onClick={() => router.push('/account')}
 								className='bg-white'
+								onClick={() => router.push('/account')}
 							>
 								<FaUserAlt />
-							</Button> */}
+							</Button>
 						</div>
-					) : (
+					) : !isLoading ? (
 						<>
 							<div>
 								<Button
-									onClick={() => {}}
+									onClick={authModal.onOpen}
 									className='
                     bg-transparent 
                     text-neutral-300 
@@ -135,12 +141,15 @@ const Header: FC<HeaderProps> = ({ children, className }) => {
 								</Button>
 							</div>
 							<div>
-								<Button onClick={() => {}} className='bg-white px-6 py-2'>
+								<Button
+									onClick={authModal.onOpen}
+									className='bg-white px-6 py-2'
+								>
 									Log in
 								</Button>
 							</div>
 						</>
-					)}
+					) : null}
 				</div>
 			</div>
 			{children}
