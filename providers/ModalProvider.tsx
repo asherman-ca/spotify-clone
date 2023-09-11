@@ -19,7 +19,6 @@ const ModalProvider = () => {
 		<>
 			<AuthModal />
 			<UploadModal />
-			{/* <Modal isOpen={false} /> */}
 		</>
 	)
 }

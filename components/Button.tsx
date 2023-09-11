@@ -32,6 +32,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
 				{...props}
 			>
 				{children}
+				{disabled && ' loading...'}
 			</button>
 		)
 	}
