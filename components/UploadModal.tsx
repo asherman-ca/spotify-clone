@@ -87,6 +87,7 @@ const UploadModal: FC<UploadModalProps> = ({}) => {
 				})
 
 			if (supabaseError) {
+				setIsLoading(false)
 				return toast.error(supabaseError.message)
 			}
 
